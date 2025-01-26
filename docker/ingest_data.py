@@ -28,7 +28,9 @@ def main(params):
 
     # get .csv.gz file
     os.system(f"wget {url} -O {gz_name}")
+    print('Retrived gz file')
     os.system(f"gzip -d {gz_name}")
+    print('Unzipped gz file')
 
 
     # initialize taxi table
@@ -60,6 +62,7 @@ def main(params):
             This process took {t_end-t_start:.2f} seconds. {n} rows have been inserted in total.""")
 
         except:
+            print('Failed to insert data')
             break
 
     # needed values to pass
