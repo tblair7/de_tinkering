@@ -1,10 +1,12 @@
-## de_tinkering
+de_tinkering
 
-# This repo will primarily be used to learn or refamiliarize myself with various DE tools
+## This repo will primarily be used to learn or refamiliarize myself with various DE tools
 
 
-# Useful commands
+## Useful commands
 pgcli -h {host} -p {port} -u {user} -d {database_name} 
-e.g.,
+
+e.g., 
+
 pgcli -h localhost -p 5431 -u admin -d ny_taxi
 
