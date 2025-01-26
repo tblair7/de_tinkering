@@ -43,11 +43,11 @@ docker build -t taxi_ingest:v001 .
 # run ingest_data in network-configured build
 #
 docker run -it \
-  --network=pg-network \
+  --network=docker_default \
   taxi_ingest:v001 \
   --username=root \
   --password=root \
-  --host=pgdatabase \
+  --host=localhost \
   --port=5432 \
   --db_name=ny_taxi \
   --table_name="yellow_taxi_trips" \
