@@ -35,6 +35,7 @@ def main(params):
 
     # initialize taxi table
     df_head = pd.read_csv(csv_name, nrows=1).head(0)
+    print('df_head: ', df_head)
 
     df_head.to_sql(name=table_name, con=engine, if_exists='replace')
 
@@ -44,16 +45,16 @@ def main(params):
     while True:
         try:
             t_start = time()
-            
+            print('Attempting to iterate through df')
             df = next(df_iter)
 
-            # just to limit the size while testing
-            # df = df.head(100)
-            
-            df['tpep_pickup_datetime'] = pd.to_datetime(df['tpep_pickup_datetime'])
-            df['tpep_dropoff_datetime'] = pd.to_datetime(df['tpep_dropoff_datetime'])
+            # this exists as tpep in other .CSVs, would need to add some catches for this if a pipeline to get all data was desired
+            df['lpep_pickup_datetime'] = pd.to_datetime(df['lpep_pickup_datetime'])
+            df['lpep_dropoff_datetime'] = pd.to_datetime(df['lpep_dropoff_datetime'])
+            print('Successfully converted datetime, attempting to write to db')
             
             df.to_sql(name=table_name, con=engine, if_exists='append')
+            print('Inserted to db')
             t_end = time()
             
             n += len(df)
@@ -63,6 +64,7 @@ def main(params):
 
         except:
             print('Failed to insert data')
+            print(len(df))
             break
 
     # needed values to pass
