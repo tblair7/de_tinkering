@@ -66,7 +66,7 @@ volumes:
     name: vol-pgadmin_data
 ```
 
-- postgres:5433
+- **postgres:5433**
 - localhost:5432
 - db:5433
 - postgres:5432
@@ -100,37 +100,77 @@ you want to use Jupyter or a python script.
 ## Question 3. Trip Segmentation Count
 
 During the period of October 1st 2019 (inclusive) and November 1st 2019 (exclusive), how many trips, **respectively**, happened:
-1. Up to 1 mile 
+1. Up to 1 mile
 ```select count(*) as num_trips
-from yellow_taxi_trips
-where tpep_pickup_datetime::date >= '2019-10-01'
-  and tpep_dropoff_datetime::date < '2019-11-01'
-  and trip_distance < 1
+from yellow_taxi_trips_2019_10
+where lpep_pickup_datetime::date >= '2019-10-01'
+  and lpep_dropoff_datetime::date < '2019-11-01'
+  and trip_distance <= 1``` 
+Result: 104802
+
 2. In between 1 (exclusive) and 3 miles (inclusive),
+```select count(*) as num_trips
+from yellow_taxi_trips_2019_10
+where lpep_pickup_datetime::date >= '2019-10-01'
+  and lpep_dropoff_datetime::date < '2019-11-01'
+  and trip_distance >= 1
+  and trip_distance < 3``` 
+Result: 201407
+
 3. In between 3 (exclusive) and 7 miles (inclusive),
-4. In between 7 (exclusive) and 10 miles (inclusive),
+```select count(*) as num_trips
+from yellow_taxi_trips_2019_10
+where lpep_pickup_datetime::date >= '2019-10-01'
+  and lpep_dropoff_datetime::date < '2019-11-01'
+  and trip_distance >= 3
+  and trip_distance < 7```
+Result: 110612
+4. In between 7 (exclusive) and 10 miles (inclusive), 
+```select count(*) as num_trips
+from yellow_taxi_trips_2019_10
+where lpep_pickup_datetime::date >= '2019-10-01'
+  and lpep_dropoff_datetime::date < '2019-11-01'
+  and trip_distance >= 7
+  and trip_distance < 10```
+Result: 27831
 5. Over 10 miles 
+```select count(*) as num_trips
+from yellow_taxi_trips_2019_10
+where lpep_pickup_datetime::date >= '2019-10-01'
+  and lpep_dropoff_datetime::date < '2019-11-01'
+  and trip_distance >= 10```
+Result: 35281
 
 Answers:
 
 - 104,802;  197,670;  110,612;  27,831;  35,281
 - 104,802;  198,924;  109,603;  27,678;  35,189
-- 104,793;  201,407;  110,612;  27,831;  35,281
+- **104,793;  201,407;  110,612;  27,831;  35,281**
 - 104,793;  202,661;  109,603;  27,678;  35,189
 - 104,838;  199,013;  109,645;  27,688;  35,202
+
+## Answer 3. 104,793;  201,407;  110,612;  27,831;  35,281
 
 
 ## Question 4. Longest trip for each day
 
 Which was the pick up day with the longest trip distance?
 Use the pick up time for your calculations.
+```select * 
+from yellow_taxi_trips_2019_10
+order by trip_distance desc
+limit 1
+```
+Result: 2019-10-31 with a distance of 515.89
 
 Tip: For every day, we only care about one single trip with the longest distance. 
 
-- 2019-10-11
+- 2019-10-11 
 - 2019-10-24
 - 2019-10-26
-- 2019-10-31
+- **2019-10-31**
+
+Answer 4. 2019-10-31
 
 
 ## Question 5. Three biggest pickup zones
@@ -139,12 +179,28 @@ Which were the top pickup locations with over 13,000 in
 `total_amount` (across all trips) for 2019-10-18?
 
 Consider only `lpep_pickup_datetime` when filtering by date.
+
+```with top_three_pickups as (select "PULocationID" as zone_id, 
+  sum(total_amount) as total
+from yellow_taxi_trips_2019_10 
+where lpep_pickup_datetime::date = '2019-10-18'
+group by "PULocationID"
+order by total desc
+limit 3
+)
+
+select z."Zone"
+from top_three_pickups 
+join taxi_zones z
+on top_three_pickups.zone_id = z."LocationID"
+order by top_three_pickups.total desc``` 
  
-- East Harlem North, East Harlem South, Morningside Heights
+- **East Harlem North, East Harlem South, Morningside Heights**
 - East Harlem North, Morningside Heights
 - Morningside Heights, Astoria Park, East Harlem South
 - Bedford, East Harlem North, Astoria Park
 
+## Answer 5. East Harlem North, East Harlem South, Morningside Heights
 
 ## Question 6. Largest tip
 
@@ -154,12 +210,27 @@ the largest tip?
 
 Note: it's `tip` , not `trip`
 
+```select yt."PULocationID" as pickup_location_id,
+yt.tip_amount,
+z."Zone" as dropoff_zone
+from yellow_taxi_trips_2019_10 yt
+join taxi_zones z
+on yt."DOLocationID" = z."LocationID"
+where yt.lpep_pickup_datetime::date >= '2019-10-01'
+  and yt.lpep_pickup_datetime::date < '2019-11-01'
+  and yt."PULocationID" in (select "LocationID" from taxi_zones where "Zone" = 'East Harlem North')
+order by yt.tip_amount desc
+limit 1```
+Result: JFK Airport with a tip of 87 ($)
+
 We need the name of the zone, not the ID.
 
 - Yorkville West
-- JFK Airport
+- **JFK Airport**
 - East Harlem North
 - East Harlem South
+
+Answer 5. JFK Airport
 
 
 ## Terraform
