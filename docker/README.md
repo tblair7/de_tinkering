@@ -47,8 +47,8 @@ docker run -it \
   taxi_ingest:v001 \
   --username=root \
   --password=root \
-  --host=localhost \
+  --host=docker-pgdatabase-1 \
   --port=5432 \
   --db_name=ny_taxi \
   --table_name="yellow_taxi_trips" \
-  --url=${URL}
+  --url="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz"
