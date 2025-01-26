@@ -116,10 +116,10 @@ select count(*) as num_trips
 from yellow_taxi_trips_2019_10
 where lpep_pickup_datetime::date >= '2019-10-01'
   and lpep_dropoff_datetime::date < '2019-11-01'
-  and trip_distance >= 1
-  and trip_distance < 3
+  and trip_distance > 1
+  and trip_distance <= 3
 ``` 
-Result: 201407
+Result: 198924
 
 3. In between 3 (exclusive) and 7 miles (inclusive),
 ```
@@ -127,10 +127,10 @@ select count(*) as num_trips
 from yellow_taxi_trips_2019_10
 where lpep_pickup_datetime::date >= '2019-10-01'
   and lpep_dropoff_datetime::date < '2019-11-01'
-  and trip_distance >= 3
-  and trip_distance < 7
+  and trip_distance > 3
+  and trip_distance <= 7
 ```
-Result: 110612 
+Result: 109603 
 
 4. In between 7 (exclusive) and 10 miles (inclusive), 
 ```
@@ -138,11 +138,11 @@ select count(*) as num_trips
 from yellow_taxi_trips_2019_10
 where lpep_pickup_datetime::date >= '2019-10-01'
   and lpep_dropoff_datetime::date < '2019-11-01'
-  and trip_distance >= 7
-  and trip_distance < 10
+  and trip_distance > 7
+  and trip_distance <= 10
 ```
 
-Result: 27831
+Result: 27678
 
 5. Over 10 miles 
 ```
@@ -150,10 +150,10 @@ select count(*) as num_trips
 from yellow_taxi_trips_2019_10
 where lpep_pickup_datetime::date >= '2019-10-01'
   and lpep_dropoff_datetime::date < '2019-11-01'
-  and trip_distance >= 10
+  and trip_distance > 10
 ```
 
-Result: 35281
+Result: 35189
 
 Answers:
 
