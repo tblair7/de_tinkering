@@ -5,7 +5,6 @@ docker run -it \
  -e POSTGRES_DB="ny_taxi" \
  -v $(pwd)/ny_taxi_data:/var/lib/postgresql/data \
  -p 5432:5432 \
- --network=pg-network \
  --name=pg_database \
  postgres:13
 
@@ -51,4 +50,4 @@ docker run -it \
   --port=5432 \
   --db_name=ny_taxi \
   --table_name="yellow_taxi_trips" \
-  --url="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz"
+  --url="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/green/green_tripdata_2019-10.csv.gz"
