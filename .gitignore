@@ -1,0 +1,4 @@
+*.json
+terraform/.terraform
+docker/nyc_taxi_data
+terraform/keys
